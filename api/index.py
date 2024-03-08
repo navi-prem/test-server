@@ -26,8 +26,12 @@ def cimta():
                 float(doctor["rating"]),
                 api_name="/predict",
             )
-            print(result)
+
             if result == '1':
-                o.append(doctor)
+                doctor["viable"] = True
+            else:
+                doctor["viable"] = False
+
+            o.append(doctor)
 
         return json.dumps(o)
