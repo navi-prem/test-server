@@ -38,3 +38,6 @@ def cimta():
             o.append(doctor)
 
         return json.dumps(o)
+
+if __name__ == "__main__":
+    app.run()
