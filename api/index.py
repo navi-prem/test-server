@@ -2,9 +2,6 @@ import json
 from flask import Flask, request
 from flask_cors import CORS
 from gradio_client import Client
-from math import ceil
-import pandas as pd
-from statsmodels.tsa.arima.model import ARIMA
 
 app = Flask(__name__)
 CORS(app)
@@ -17,12 +14,13 @@ def hello():
 def cimta():
     if request.method == "POST":
         o = []
-        client = Client("aswatht/cimta")
+        cimta = Client("aswatht/cimta")
+        itas = Client("aswatht/itas")
 
         data = request.json["data"],
 
         for doctor in data[0]:
-            result = client.predict(
+            result = cimta.predict(
                 float(doctor["pending_patients_count"]),
                 float(doctor["avg_wait_time"]),
                 float(doctor["time"]),
@@ -31,11 +29,11 @@ def cimta():
             )
 
             doctor["viable"] = result
-            crowd = pd.DataFrame(doctor["crowd"])
-            model = ARIMA(crowd, order=(5, 1, 0))
-            model_fit = model.fit()
-            forecast = model_fit.forecast(steps=1)
-            doctor["estimate"] = str(ceil(forecast.values[0]))
+            crowd = doctor["crowd"]
+            print(crowd)
+            print(type(crowd[0]))
+            ans = itas.predict(crowd[0], crowd[1], crowd[2], crowd[3], crowd[4], crowd[5], crowd[6], api_name="/predict")
+            doctor["estimate"] = ans
 
             o.append(doctor)
 

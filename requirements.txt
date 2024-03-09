@@ -1,5 +1,3 @@
 flask==3.0.0
 flask-cors
-gradio-client
-pandas
-statsmodels
+gradio
